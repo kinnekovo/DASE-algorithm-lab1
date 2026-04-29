@@ -1,0 +1,16 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Generated output (except placeholder)
+output/checkpoints.csv
+output/*.txt
+output/*.sorted
+
+# Temporary sort runs
+*.run
+
+# OS files
+.DS_Store
+Thumbs.db
