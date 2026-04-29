@@ -1,5 +1,80 @@
 # 2026 数据科学与工程算法 实验一：数据流统计算法
 
+## 运行说明
+
+### 依赖
+仅使用 Python 3.10+ 标准库，无需额外安装第三方包。
+
+### 快速运行（使用仓库内样本数据）
+
+```bash
+# 从仓库根目录运行
+python code/main.py --input data.txt
+```
+
+### 完整流水线（大文件 + 外部排序）
+
+```bash
+python code/main.py \
+    --input Gowalla_totalCheckins.txt \
+    --do-sort \
+    --sorted-output data_sorted.txt \
+    --grid-step 0.001 \
+    --topk 10 \
+    --checkpoint-every 100000 \
+    --output-dir output
+```
+
+### 常用参数
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--input` | `data.txt` | 输入数据文件路径 |
+| `--do-sort` | — | 对输入文件按时间戳排序（外部归并排序，支持大文件） |
+| `--sorted-output` | `<input>.sorted` | 排序后的输出文件路径 |
+| `--grid-step` | `0.001` | 网格步长（度），如 0.001 ≈ 111 m |
+| `--topk` | `10` | Top-K 查询的 K 值 |
+| `--checkpoint-every` | `100000` | 每处理 N 条记录触发一次 checkpoint 评测 |
+| `--sample-size` | `200` | 每次 checkpoint 抽样的 key 数量 |
+| `--output-dir` | `output` | 输出目录（存放 checkpoints.csv） |
+| `--cms-width` | `20000` | Count-Min Sketch 列数（越大误差越小） |
+| `--cms-depth` | `7` | Count-Min Sketch 行数（越大置信度越高） |
+| `--mg-k` | `500` | Misra-Gries 计数器数量（越大 Top-K 召回越好） |
+| `--bf-capacity` | `300000` | Bloom Filter 预期元素数量 |
+| `--bf-fpr` | `0.01` | Bloom Filter 目标误判率 |
+| `--print-all-users` | — | 打印所有用户的精确签到次数 |
+
+### 输出文件
+
+- `output/checkpoints.csv`：每个 checkpoint 的 sketch 精度评测指标
+
+### 代码结构
+
+```
+code/
+├── main.py               # 命令行入口
+├── stream_processor.py   # 流式处理器（精确结构 + sketch 结构 + checkpoint 评测）
+├── grid.py               # 经纬度网格编码工具
+├── sort_external.py      # 外部归并排序（支持超内存大文件）
+└── sketches/
+    ├── bloom.py          # Bloom Filter（成员查询，无假阴性）
+    ├── cms.py            # Count-Min Sketch（频率估计，MAE/MRE 评测）
+    └── misra_gries.py    # Misra-Gries（Top-K 候选检测）
+```
+
+### Checkpoint 评测指标
+
+| 指标 | 结构 | 说明 |
+|------|------|------|
+| `bf_user_fpr` / `bf_grid_fpr` | Bloom Filter | 对负例采样的假阳性率（理论无假阴性） |
+| `cms_user_mae` / `cms_grid_mae` | Count-Min Sketch | 平均绝对误差 |
+| `cms_user_mre` / `cms_grid_mre` | Count-Min Sketch | 平均相对误差（true>0 时计算） |
+| `topk_user_recall` / `topk_grid_recall` | MG + CMS | Recall@K：sketch Top-K 与精确 Top-K 的重叠率 |
+| `topk_user_precision` / `topk_grid_precision` | MG + CMS | Precision@K |
+| `topk_user_jaccard` / `topk_grid_jaccard` | MG + CMS | Jaccard@K |
+
+---
+
 ------
 
 ## 基本信息
