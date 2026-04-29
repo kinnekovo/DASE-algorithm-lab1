@@ -44,7 +44,7 @@ def _parse_line(line: str) -> Optional[Tuple[str, str, float, float, str]]:
     parts = line.strip().split("\t")
     if len(parts) < 5:
         return None
-    uid, ts, lat_s, lon_s, loc_id = parts[0], parts[1], parts[2], parts[3], parts[4]
+    uid, ts, lat_s, lon_s, loc_id = parts[:5]
     try:
         lat = float(lat_s)
         lon = float(lon_s)
@@ -108,6 +108,8 @@ class StreamProcessor:
 
         # ---- Sketch structures ----
         self.bf_user = BloomFilter(capacity=bf_capacity, fpr=bf_fpr)
+        # Grid cells are far more numerous than distinct users (up to ~N cells
+        # for fine-grained steps), so allocate a proportionally larger filter.
         self.bf_grid = BloomFilter(capacity=bf_capacity * 10, fpr=bf_fpr)
         self.cms_user = CountMinSketch(width=cms_width, depth=cms_depth)
         self.cms_grid = CountMinSketch(width=cms_width, depth=cms_depth)
@@ -255,7 +257,9 @@ class StreamProcessor:
                 f"(unexpected — check implementation)."
             )
 
-        # Generate absent keys and count false positives
+        # Generate absent keys and count false positives.
+        # n * 200 attempts is generous: even if 50 % of the candidate space
+        # collides with existing keys, we will still collect n samples quickly.
         neg_keys: List[str] = []
         rng = random.Random(42)
         attempts = 0

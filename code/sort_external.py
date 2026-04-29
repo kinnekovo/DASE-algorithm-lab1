@@ -20,7 +20,7 @@ Complexity:
 import heapq
 import os
 import tempfile
-from typing import List
+from typing import List, Optional
 
 
 # ---------------------------------------------------------------------------
@@ -57,7 +57,7 @@ def external_sort(
     input_path: str,
     output_path: str,
     chunk_size: int = 200_000,
-    tmp_dir: str | None = None,
+    tmp_dir: Optional[str] = None,
 ) -> None:
     """
     Sort *input_path* by timestamp and write the result to *output_path*.

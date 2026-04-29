@@ -1,6 +1,0 @@
-checkpoint,records_processed,bf_user_fpr,bf_grid_fpr,cms_user_mae,cms_user_mre,cms_grid_mae,cms_grid_mre,topk_user_recall,topk_user_precision,topk_user_jaccard,topk_grid_recall,topk_grid_precision,topk_grid_jaccard
-1,1000,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
-2,2000,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
-3,3000,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
-4,4000,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
-5,4226,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0

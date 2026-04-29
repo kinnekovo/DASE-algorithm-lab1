@@ -41,6 +41,8 @@ class CountMinSketch:
 
     @staticmethod
     def _make_seed(i: int) -> int:
+        # MD5 is used here only for deterministic, reproducible seed generation
+        # (not for any cryptographic purpose).
         digest = hashlib.md5(f"cms_row_{i}".encode()).hexdigest()
         return int(digest, 16)
 

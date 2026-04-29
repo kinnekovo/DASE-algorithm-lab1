@@ -41,13 +41,9 @@ class MisraGries:
         elif len(self.counters) < self.k:
             self.counters[key] = 1
         else:
-            # Decrement all counters by 1 and remove zero-count entries
-            to_delete = [k for k, v in self.counters.items() if v <= 1]
-            for dk in to_delete:
-                del self.counters[dk]
-            for ck in list(self.counters):
-                self.counters[ck] -= 1
-            # The new item is effectively discarded in this reduction step
+            # Decrement all counters by 1 and remove zero-count entries in one
+            # pass using a dict comprehension (avoids a separate list copy).
+            self.counters = {k: v - 1 for k, v in self.counters.items() if v > 1}
 
     def top_k(self, k: int = 10) -> List[Tuple[str, int]]:
         """

@@ -150,7 +150,7 @@ def main() -> None:
     processor.process_file(input_path)
 
     # Always run a final checkpoint so small datasets produce at least one row
-    if processor.total_records % args.checkpoint_every != 0 or processor.total_records == 0:
+    if processor.total_records % args.checkpoint_every != 0:
         print("\n[Checkpoint] Running final evaluation …")
         processor.run_final_checkpoint()
 
